@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quizzly</title>
+  <style>
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      overflow: hidden;
+      color: white;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      background: radial-gradient(circle at bottom, #13002b 0%, #000010 100%);
+    }
+
+    /* ---------- Landing Page ---------- */
+    #landing {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      background: radial-gradient(circle at bottom, #13002b 0%, #000010 100%);
+      z-index: 10;
+      overflow: hidden;
+      animation: fadeIn 1.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    h1 {
+      font-size: 3em;
+      text-shadow: 0 0 25px rgba(255,255,255,0.7);
+      animation: pulse 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes pulse {
+      0% { text-shadow: 0 0 20px #a855f7, 0 0 50px #9333ea; }
+      100% { text-shadow: 0 0 40px #fff, 0 0 80px #a855f7; }
+    }
+
+    #start-btn {
+      margin-top: 30px;
+      background: linear-gradient(90deg, #a855f7, #9333ea);
+      color: white;
+      padding: 15px 40px;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 0 30px rgba(168,85,247,0.5);
+      transition: all 0.4s ease;
+    }
+
+    #start-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 50px rgba(168,85,247,0.8);
+    }
+
+    /* Falling Stars */
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 80px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.9), transparent);
+      top: -100px;
+      opacity: 0.8;
+      animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(0) translateX(0) rotate(45deg); opacity: 1; }
+      100% { transform: translateY(1000px) translateX(200px) rotate(45deg); opacity: 0; }
+    }
+
+    /* ---------- Quiz Page ---------- */
+    #quiz-page {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      width: 100%;
+      background: linear-gradient(135deg, #7f00ff, #e100ff);
+      animation: bgPulse 8s ease-in-out infinite alternate;
+      overflow: hidden;
+    }
+
+    @keyframes bgPulse {
+      0% { background: linear-gradient(135deg, #6a00ff, #d400ff); }
+      100% { background: linear-gradient(135deg, #9b00ff, #f200ff); }
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 30px;
+      width: 80%;
+      max-width: 600px;
+      box-shadow: 0 0 40px rgba(255,255,255,0.2);
+      text-align: center;
+      animation: float 5s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    .question {
+      font-size: 1.3em;
+      margin-bottom: 20px;
+      animation: fadeSlide 1.2s ease;
+    }
+
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .options button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 25px;
+      padding: 12px;
+      color: white;
+      font-size: 1em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .options button:hover {
+      background: rgba(255,255,255,0.3);
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(168,85,247,0.6);
+    }
+
+    #next-btn {
+      background: linear-gradient(90deg, #a855f7, #9333ea);
+      border: none;
+      color: white;
+      padding: 12px 25px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 1em;
+      margin-top: 25px;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 25px rgba(168,85,247,0.5);
+    }
+
+    #next-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 35px rgba(168,85,247,0.8);
+    }
+
+    /* Background Orbs */
+    .bg-orbs span {
+      position: absolute;
+      display: block;
+      width: 50px;
+      height: 50px;
+      background: radial-gradient(circle, rgba(255,255,255,0.3), transparent 70%);
+      border-radius: 50%;
+      animation: drift 20s linear infinite;
+    }
+
+    @keyframes drift {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(-800px) rotate(360deg); opacity: 0; }
+    }
+
+    /* Result Circle */
+    .result-circle {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 30px rgba(255,255,255,0.3);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2em;
+      font-weight: bold;
+      margin: 30px auto;
+      animation: fadeInScale 1.5s ease;
+    }
+
+    @keyframes fadeInScale {
+      from { transform: scale(0); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    /* Credits */
+    #credits {
+      font-size: 1.1em;
+      margin-top: 20px;
+      color: rgba(255,255,255,0.8);
+      letter-spacing: 1px;
+      animation: fadeIn 2s ease-in-out 1s both;
+    }
+  </style>
+</head>
+<body>
+  <!-- Landing Page -->
+  <div id="landing">
+    <h1>✨ Quizzly ✨</h1>
+    <button id="start-btn">Start Quiz</button>
+  </div>
+
+  <!-- Quiz Page -->
+  <div id="quiz-page">
+    <div class="bg-orbs">
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+
+    <div class="container" id="quiz-container">
+      <div id="quiz"></div>
+      <button id="next-btn">Next</button>
+      <div id="score"></div>
+      <div id="credits">By Swaraj & Team 💜</div>
+    </div>
+  </div>
+
+  <script>
+    // --- Create falling stars dynamically ---
+    for (let i = 0; i < 30; i++) {
+      const star = document.createElement('div');
+      star.classList.add('star');
+      star.style.left = Math.random() * 100 + '%';
+      star.style.animationDuration = 2 + Math.random() * 3 + 's';
+      star.style.animationDelay = Math.random() * 3 + 's';
+      document.getElementById('landing').appendChild(star);
+    }
+
+    // --- Start Quiz Transition ---
+    const startBtn = document.getElementById('start-btn');
+    const landing = document.getElementById('landing');
+    const quizPage = document.getElementById('quiz-page');
+
+    startBtn.addEventListener('click', () => {
+      landing.style.transition = "opacity 1.5s ease";
+      landing.style.opacity = 0;
+      setTimeout(() => {
+        landing.style.display = "none";
+        quizPage.style.display = "flex";
+      }, 1500);
+    });
+
+    // --- Quiz Logic ---
+    const quizData = [
+      { question: "Who was the first Emperor of the Maurya Dynasty?", options: ["Ashoka", "Chandragupta Maurya", "Bindusara", "Harsha"], answer: 1 },
+      { question: "In which year did the Revolt of 1857 begin?", options: ["1848", "1857", "1865", "1871"], answer: 1 },
+      { question: "Who is known as the 'Napoleon of India'?", options: ["Samudragupta", "Ashoka", "Harsha", "Alauddin Khilji"], answer: 0 },
+      { question: "Which Mughal emperor built the Red Fort?", options: ["Akbar", "Jahangir", "Shah Jahan", "Aurangzeb"], answer: 2 },
+      { question: "Who founded the Gupta Empire?", options: ["Chandragupta I", "Chandragupta II", "Samudragupta", "Skandagupta"], answer: 0 },
+      { question: "Who was the founder of the Mughal Empire?", options: ["Akbar", "Babur", "Humayun", "Sher Shah Suri"], answer: 1 },
+      { question: "The Battle of Plassey was fought in which year?", options: ["1757", "1764", "1857", "1775"], answer: 0 },
+      { question: "Who composed the Indian national anthem?", options: ["Bankim Chandra Chatterjee", "Rabindranath Tagore", "Sarojini Naidu", "Aurobindo Ghosh"], answer: 1 },
+      { question: "Who was known as the Iron Man of India?", options: ["Jawaharlal Nehru", "Sardar Vallabhbhai Patel", "B. R. Ambedkar", "Subhas Chandra Bose"], answer: 1 },
+      { question: "Who was the last Governor-General of independent India?", options: ["Lord Mountbatten", "C. Rajagopalachari", "Rajendra Prasad", "Lord Wavell"], answer: 1 }
+    ];
+
+    const quiz = document.getElementById("quiz");
+    const nextBtn = document.getElementById("next-btn");
+    const scoreDisplay = document.getElementById("score");
+
+    let currentQuestion = 0;
+    let score = 0;
+    let answered = false;
+
+    function loadQuestion() {
+      const q = quizData[currentQuestion];
+      quiz.innerHTML = `
+        <div class="question">${q.question}</div>
+        <div class="options">
+          ${q.options.map((opt, i) => `<button onclick="checkAnswer(${i})">${opt}</button>`).join("")}
+        </div>
+      `;
+      scoreDisplay.textContent = "";
+      nextBtn.style.display = "none";
+      answered = false;
+    }
+
+    window.checkAnswer = function(selected) {
+      if (answered) return;
+      answered = true;
+      const correct = quizData[currentQuestion].answer;
+      if (selected === correct) score++;
+      nextBtn.style.display = "inline-block";
+    }
+
+    nextBtn.addEventListener("click", () => {
+      currentQuestion++;
+      if (currentQuestion < quizData.length) {
+        loadQuestion();
+      } else {
+        quiz.innerHTML = `
+          <div class="result-circle">${score}/${quizData.length}</div>
+          <h2>🎉 Great job finishing Quizzly!</h2>
+        `;
+        nextBtn.style.display = "none";
+      }
+    });
+
+    loadQuestion();
+  </script>
+</body>
+</html>
